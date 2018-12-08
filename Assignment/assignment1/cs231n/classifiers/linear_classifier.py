@@ -3,6 +3,7 @@ from __future__ import print_function
 import numpy as np
 from cs231n.classifiers.linear_svm import *
 from cs231n.classifiers.softmax import *
+from random import choices
 
 class LinearClassifier(object):
 
@@ -37,6 +38,7 @@ class LinearClassifier(object):
     # Run stochastic gradient descent to optimize W
     loss_history = []
     for it in range(num_iters):
+      # release the memory of the object
       X_batch = None
       y_batch = None
 
@@ -51,7 +53,9 @@ class LinearClassifier(object):
       # Hint: Use np.random.choice to generate indices. Sampling with         #
       # replacement is faster than sampling without replacement.              #
       #########################################################################
-      pass
+      batch_indices = choices(range(X.shape[0]), k=batch_size)
+      X_batch = X[batch_indices]
+      y_batch = y[batch_indices]
       #########################################################################
       #                       END OF YOUR CODE                                #
       #########################################################################
@@ -65,14 +69,13 @@ class LinearClassifier(object):
       # TODO:                                                                 #
       # Update the weights using the gradient and the learning rate.          #
       #########################################################################
-      pass
+      self.W -= grad * learning_rate
       #########################################################################
       #                       END OF YOUR CODE                                #
       #########################################################################
 
       if verbose and it % 100 == 0:
         print('iteration %d / %d: loss %f' % (it, num_iters, loss))
-
     return loss_history
 
   def predict(self, X):
@@ -94,7 +97,8 @@ class LinearClassifier(object):
     # TODO:                                                                   #
     # Implement this method. Store the predicted labels in y_pred.            #
     ###########################################################################
-    pass
+    scores = X.dot(self.W)
+    y_pred = np.argmax(scores,axis=1)
     ###########################################################################
     #                           END OF YOUR CODE                              #
     ###########################################################################
